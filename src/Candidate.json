@@ -1,0 +1,13 @@
+{
+    "type": "CANDIDATE",
+    "payload": {
+        "candidate": {
+            "candidate": "candidate:3753400783 1 udp 2113937151 1e46a958-c2bb-4649-9ae3-c9503f23157f.local 49226 typ host generation 0 ufrag nFAc network-cost 999",
+            "sdpMid": "0",
+            "sdpMLineIndex": 0
+        },
+        "type": "data",
+        "connectionId": "dc_csnz2if3e89"
+    },
+    "dst": "37dc1248-9d8b-47d5-8ceb-5572f88e7e7b"
+}

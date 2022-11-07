@@ -1,0 +1,16 @@
+{
+    "type": "OFFER",
+    "payload": {
+        "sdp": {
+            "type": "offer",
+            "sdp": "v=0\r\no=- 1255908255394724671 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:nFAc\r\na=ice-pwd:WCJO14WlN77ZiCm0QJHJ4+fN\r\na=ice-options:trickle\r\na=fingerprint:sha-256 7A:5D:0F:10:A1:E4:EC:1C:5C:2D:F5:41:E4:6B:77:9D:32:8C:31:CF:C2:FE:53:A0:49:90:BD:C7:5D:00:73:C1\r\na=setup:actpass\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n"
+        },
+        "type": "data",
+        "connectionId": "dc_csnz2if3e89",
+        "browser": "chrome",
+        "label": "dc_csnz2if3e89",
+        "reliable": true,
+        "serialization": "binary"
+    },
+    "dst": "37dc1248-9d8b-47d5-8ceb-5572f88e7e7b"
+}
