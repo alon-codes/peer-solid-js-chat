@@ -8,9 +8,9 @@ import { format } from 'date-fns';
 import { chat } from './state/ChatStore';
 
 render(() => (
-    <Router>
-         <App />
-         <div style={{ position: 'fixed', bottom: 0, padding: '10px', margin: '10px'}} class="footer">
+    <div class="flex bg-blue-200 h-screen">
+        <Router>
+            <App />
             <For each={chat.errors}>
                 {(curErr) => (
                     <div style={{ color: 'red' }}>
@@ -18,14 +18,17 @@ render(() => (
                     </div>
                 )}
             </For>
-            <div>Your id: <b>{chat.localDeviceId}</b></div>
-            {chat.peerConnection?.time && (
-                <div>
-                    Connected Since:
-                    <b>{format(chat.peerConnection?.time, 'dd/MM/yyyy HH:mm')}</b>
-                </div>
+            <div class="footer container fixed top-0 right-0 p-3 mx-auto text-center">
+                
+                <div>Your id: <b>{chat.localDeviceId}</b></div>
+                {chat.peerConnection?.time && (
+                    <div class="text-center">
+                        Connected Since:
+                        <b>{format(chat.peerConnection?.time, 'dd/MM/yyyy HH:mm')}</b>
+                    </div>
 
-            )}
-        </div>
-    </Router>
+                )}
+            </div>
+        </Router>
+    </div>
 ), document.getElementById('root') as HTMLElement);

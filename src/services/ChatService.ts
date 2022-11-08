@@ -17,6 +17,20 @@ export function addError(msg: string) {
     }, 1000);
 }
 
+export function handelIncomingMessage(conn: DataConnection, d: any){
+    console.log(`Received message from ${conn.peer}`, { d });
+    if(typeof d === 'string'){
+        console.log({ d, peer: conn.peer });
+
+        addMessage(conn.peer, {
+            content: d,
+            time: new Date(),
+            deviceId: conn.peer,
+            inbound: true
+        });
+    }
+}
+
 export function addMessage(deviceId: string, chatMessage: ChatMessage){
     setChatData('messages', (prevMessagesMap) => {
         const currentMessages = prevMessagesMap.get(deviceId);
@@ -56,19 +70,7 @@ export function connectToPeerServer() {
             conn.on('open', () => {
                 setChatData('sessions', (prevSessions) => prevSessions.set(conn.peer, conn))
                 console.log(`Connection with ${conn.peer}`)
-                conn.on('data', (d) => {
-                    console.log(`Received message from ${conn.peer}`, { d });
-                    if(typeof d === 'string'){
-                        console.log({ d, peer: conn.peer });
-
-                        addMessage(conn.peer, {
-                            content: d,
-                            time: new Date(),
-                            deviceId: conn.peer,
-                            inbound: true
-                        });
-                    }
-                });
+                conn.on('data', (d) => handelIncomingMessage(conn, d));
             });
         });
     }
@@ -91,6 +93,7 @@ export async function startConnection(deviceId: string) {
             const conn: DataConnection = chat.peerConnection.peer.connect(deviceId);
 
             conn.on('open', () => {
+                conn.on('data', (d) => handelIncomingMessage(conn, d));
                 setChatData('sessions', (prevSessions) => prevSessions.set(deviceId, conn));
                 resolve(true);
             })

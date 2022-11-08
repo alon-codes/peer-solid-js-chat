@@ -1,37 +1,34 @@
 import { useNavigate } from "@solidjs/router";
 import { format } from "date-fns";
-import { createEffect, createSignal, For } from "solid-js";
+import { createEffect, createSelector, createSignal, For } from "solid-js";
 import { chat, ChatMessage } from "../state/ChatStore";
 
 export function Message(props: { message: ChatMessage }){
     const { content, inbound, time } = props.message;
+    const color = inbound ? "bg-blue-300" : "bg-blue-400";
     return (
-        <div style={{ "align-content": inbound ? 'flex-start' : 'flex-end' }} class="single-message">
-            <span class="single-message-date">{format(time, 'dd/mm/yyyy HH:mm')}</span>
+        <div class={`flex flex-col ${color} container w-1/4 rounded-lg my-4 py-2 px-4`}>
+            <span class="single-message-date font-bold">{format(time, 'dd/mm/yyyy HH:mm')}</span>
             <span class="single-message-content">{content}</span>
         </div>
     )
 }
 
 export function Thread(props: { deviceId: string }){
-    const {deviceId} = props;
-    const [ messages, setMessages ] = createSignal<Array<ChatMessage>>();
+    const { deviceId } = props;
     const navigate = useNavigate();
-
-    const lastMessage = messages()?.at(-1);
+    const [ lastMessage, setLastMessage ] = createSignal<ChatMessage>();
 
     createEffect(() => {
-        const currentSessionMessages = chat.messages.get(deviceId);
-        if(!!currentSessionMessages){
-            setMessages(currentSessionMessages);
-        }
+        setLastMessage(chat.messages.get(deviceId)?.at(-1));
     })
 
     return (
-        <div onClick={e => navigate(`/chat/${deviceId}`)}>
+        <div class="s" onClick={e => navigate(`/chat/${deviceId}`)}>
             <div>{deviceId}</div>
             <div>
-                {!!lastMessage ? <Message message={lastMessage} /> : "Not messages for this thread" }
+                {/* BUG - Not showing the latest messages of the user */}
+                {!!lastMessage() ? <Message message={lastMessage()} /> : "Not messages for this thread" }
             </div>
         </div>
     );

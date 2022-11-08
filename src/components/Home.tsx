@@ -27,13 +27,13 @@ export default function Home(){
     }
 
     return (
-        <div class="connect-form">
-            <div>
+        <div class="container connect-form">
+            <div class="flex flex-col w-1/4 my-4">
                 <label for="device-id">Device ID</label>
-                <input onKeyUp={e => setId(e.currentTarget.value)} id="device-id" name="device-id" />
+                <input class="rounded-lg border border-blue-400 p-2" onKeyUp={e => setId(e.currentTarget.value)} id="device-id" name="device-id" />
             </div>
-            <div>
-                <button disabled={id().length <= 0} onClick={e => startChat()}>Connect</button>
+            <div class="container">
+                <button class="button p-3 bg-blue-400 rounded-lg" disabled={id().length <= 0} onClick={e => startChat()}>Connect</button>
             </div>
 
             <Threads />

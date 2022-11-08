@@ -8,23 +8,27 @@ import { chat, errors, setChatData } from './state/ChatStore';
 let count = 0;
 
 const App: Component = () => {
+
   onMount(() => {
     console.log("Main onMount")
     connectToPeerServer();
     setChatData('connected', true);
-    document.title = `Chat`
   });
 
   return (
-      <Routes>
-        <Route path="/" component={Home} />
-        <Route path="chat/:id" component={Conversation} />
-        <For each={errors}>
-          {(currentMessage) => (
-            <div>{currentMessage}</div>
-          )}
-        </For>
-      </Routes>
+      <div class="container p-5 mx-auto">
+        <Routes>
+          <Route path="/" component={Home} />
+          <Route path="chat/:id" component={Conversation} />
+          <div class="container">
+            <For each={errors}>
+              {(currentMessage) => (
+                <div>{currentMessage}</div>
+              )}
+            </For>
+          </div>
+        </Routes>
+      </div>
   )
 };
 
