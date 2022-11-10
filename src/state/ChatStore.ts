@@ -1,7 +1,6 @@
 import { ReactiveMap } from "@solid-primitives/map";
 import Peer, { DataConnection } from "peerjs";
 import { createStore } from 'solid-js/store';
-import { v4 as uuid } from 'uuid';
 
 export interface ChatMessage {
     deviceId: string;
@@ -10,32 +9,31 @@ export interface ChatMessage {
     time: Date;
 }
 
-interface ConnDescription {
+export interface ConnDescription {
     peer?: Peer;
     time: Date;
 }
 
-export interface ChatSession {
-    dataConnection: DataConnection;
-    messages: Array<ChatMessage>;
-}
-
 export interface ChatSessionState {
     sessions: ReactiveMap<string, DataConnection>;
-    localDeviceId: string;
+    localDeviceId: string | null;
     peerConnection: ConnDescription | null;
     errors: Array<string>;
     messages: ReactiveMap<string, Array<ChatMessage>>;
     connected: boolean;
+    localIdLocked: boolean;
 }
 
 export const [ chat, setChatData ] = createStore<ChatSessionState>({
     sessions: new ReactiveMap(),
-    localDeviceId: uuid(),
+    localDeviceId: "",
     peerConnection: null,
     errors: [],
     messages: new ReactiveMap(),
-    connected: false
+    connected: false,
+    get localIdLocked(){
+        return !!sessionStorage.getItem('localIdLocked');
+    }
 });
 
 export const [ errors, setErrors ] = createStore<Array<string>>([]);

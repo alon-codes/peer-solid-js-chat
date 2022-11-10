@@ -6,9 +6,28 @@ import App from './App';
 import { Router } from '@solidjs/router';
 import { format } from 'date-fns';
 import { chat } from './state/ChatStore';
+import Info from './components/Info';
+import Container from '@suid/material/Container';
+import { createTheme, ThemeProvider } from '@suid/material';
+import { blueGrey, grey, lightBlue, purple, teal } from '@suid/material/colors';
+
+const theme = createTheme({
+    palette: {
+        background: {
+            default: blueGrey[200]
+        },
+        primary: {
+            main: blueGrey[500]
+        },
+        secondary: {
+            main: blueGrey[100]
+        }
+    }
+})
 
 render(() => (
-    <div class="flex bg-blue-200 h-screen">
+    <ThemeProvider theme={theme}>
+    <Container>
         <Router>
             <App />
             <For each={chat.errors}>
@@ -18,17 +37,7 @@ render(() => (
                     </div>
                 )}
             </For>
-            <div class="footer container fixed top-0 right-0 p-3 mx-auto text-center">
-                
-                <div>Your id: <b>{chat.localDeviceId}</b></div>
-                {chat.peerConnection?.time && (
-                    <div class="text-center">
-                        Connected Since:
-                        <b>{format(chat.peerConnection?.time, 'dd/MM/yyyy HH:mm')}</b>
-                    </div>
-
-                )}
-            </div>
         </Router>
-    </div>
+    </Container>
+    </ThemeProvider>
 ), document.getElementById('root') as HTMLElement);

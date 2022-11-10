@@ -1,11 +1,12 @@
-import { createSignal, onMount } from "solid-js";
-import { connectToPeerServer, startConnection } from "../services/ChatService"
-import Chat from "./Conversation";
-import { v4 as uuid } from "uuid";
+import { createSignal } from "solid-js";
 import { useNavigate } from "@solidjs/router";
-import { format } from "date-fns";
 import Threads from "./Threads";
-import { chat } from "../state/ChatStore";
+import Button from "@suid/material/Button";
+import TextField from "@suid/material/TextField";
+import Grid from "@suid/material/Grid";
+import FormLabel from "@suid/material/FormLabel";
+import Stack from "@suid/material/Stack";
+import { useTheme } from "@suid/material";
 
 export default function Home(){
     const navigate = useNavigate();
@@ -14,11 +15,7 @@ export default function Home(){
     async function startChat(){
         try {
             if(!!id() && id().length > 0){
-                const res = await startConnection(id());
-                console.log({ res });
-                if(!!res){
-                    navigate(`/chat/${id()}`);
-                }
+                navigate(`/chat/${id()}`);
             }
         }
         catch(e){
@@ -26,17 +23,27 @@ export default function Home(){
         }
     }
 
-    return (
-        <div class="container connect-form">
-            <div class="flex flex-col w-1/4 my-4">
-                <label for="device-id">Device ID</label>
-                <input class="rounded-lg border border-blue-400 p-2" onKeyUp={e => setId(e.currentTarget.value)} id="device-id" name="device-id" />
-            </div>
-            <div class="container">
-                <button class="button p-3 bg-blue-400 rounded-lg" disabled={id().length <= 0} onClick={e => startChat()}>Connect</button>
-            </div>
+    function onIdChange(val: string){
+        if(val.length === 36){
+            setId(val);
+        }
+    }
 
+    const theme = useTheme();
+
+    return (
+        <Stack direction="column">
+            <Grid spacing={2} sx={{ paddingY: theme.spacing(2) }} container direction="column" item xs={6}>
+                <Grid item xs={6}>
+                    <TextField fullWidth label="Device Id" onChange={e => onIdChange(e.currentTarget.value)} id="device-id" name="device-id" />
+                </Grid>
+                <Grid container item xs={3}>
+                    <Button variant="contained" disabled={id().length <= 0} onClick={e => startChat()}>
+                        Connect
+                    </Button>
+                </Grid>
+            </Grid>
             <Threads />
-        </div>
+        </Stack>
     );
 }

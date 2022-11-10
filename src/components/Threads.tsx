@@ -12,7 +12,7 @@ export function Message(props: { message: ChatMessage }){
     const color = inbound ? "bg-blue-300" : "bg-blue-400";
     const theme = useTheme();
     return (
-        <Grid alignItems="center" alignContent={!inbound ? "flex-end" : "flex-start" } sx={{ marginY: theme.spacing(1) }} container direction="row" justifySelf="center" item xs={12}>
+        <Grid alignItems="center" alignContent={!inbound ? "flex-end" : "flex-start" } marginBottom={2} item xs={12}>
             <Typography marginRight={2} fontWeight="bold" variant="caption">
                 {format(time, 'dd/M/yyyy HH:mm')}
             </Typography>

@@ -1,54 +1,120 @@
 import { useParams } from "@solidjs/router";
+import { useTheme } from "@suid/material";
+import Button from "@suid/material/Button";
+import Card from "@suid/material/Card";
+import { blueGrey, green, grey, lightGreen } from "@suid/material/colors";
+import Grid from "@suid/material/Grid";
+import List from "@suid/material/List";
+import ListItem from "@suid/material/ListItem";
+import ListItemText from "@suid/material/ListItemText";
+import Paper from "@suid/material/Paper";
+import Stack from "@suid/material/Stack";
+import TextField from "@suid/material/TextField";
+import Typography from "@suid/material/Typography";
 import { format } from "date-fns";
-import { createEffect, createSignal, For } from "solid-js";
+import { DataConnection } from "peerjs";
+import { createEffect, createSignal, For, from, on, onMount, observable, createReaction } from "solid-js";
 import { unwrap } from "solid-js/store";
-import { sendMessage } from "../services/ChatService";
-import { chat, ChatMessage } from "../state/ChatStore";
+import { sendMessage, startConnection } from "../services/ChatService";
+import { chat, ChatMessage, ConnDescription } from "../state/ChatStore";
+import { CopyButton } from "./Common";
 import { Message } from "./Threads";
 
 export default function Conversation() {
 
     const params = useParams<{ id: string }>();
     const [content, setContent] = createSignal<string>("");
+    const [isOnline, setOnline] = createSignal<boolean>(false);
+    const [messages, setMessages] = createSignal<Array<ChatMessage>>();
+
+    let itemsListRef: any;
 
     function handleSubmit() {
         console.log({ id: params.id, content: content() })
         sendMessage(params.id, content());
         setContent("")
+        if (!!itemsListRef) {
+            //itemsListRef.scrollIntoView();
+        }
     }
 
-    const [ messages, setMessages ] = createSignal<Array<ChatMessage>>();
-
+    // Messages from store effect
     createEffect(() => {
         const currentSessionMessages = chat.messages.get(params.id);
-        if(!!currentSessionMessages){
+        if (!!currentSessionMessages) {
             setMessages(currentSessionMessages);
         }
-    })
+    });
+
+    let conn = chat.sessions.get(params.id);
+
+    // Session data from store effect
+    createEffect( () => {
+        const session = chat.sessions.get(params.id);
+        if(!!session){
+            session.on('open', () => {
+                console.log('Connection closed with ', params.id);
+                setOnline(true);
+            });
+            session.on('close', () => {
+                console.log('Connection closed with ', params.id);
+                setOnline(false);
+            });
+            session.on('error', (e) => {
+                console.error('Connection error with ', { id: params.id, e });
+                setOnline(false)
+            });
+        }
+    });
+
+    onMount(async () => {
+        // BUG - find better way to solve it!
+        // Find a way to subscribe to chat.peerConnection for updates
+        setTimeout(async () => {
+            if(!!chat.peerConnection && !!chat.peerConnection.peer){
+                const res = await startConnection(params.id);
+                setOnline(res);
+            }
+        }, 500);
+    });
+
 
     console.log({ messages });
 
+    const theme = useTheme();
+
     return (
-        <div class="flex container w-screen flex-col h-full justify-between">
-            <div class="flex">
-                <h2 class="text-bold">{params.id}</h2>
-            </div>
-            <div class="container flex flex-col">
-                {!!messages() &&  (
-                    <For each={messages()} fallback={<div>Chat currently empty</div>}>
-                        {(curMsg) => <Message message={curMsg} />}
+        <Grid sx={{ position: "relative", height: "100%" }} item xs={12}  container justifyItems="stretch" alignItems="flex-start" justifyContent="space-around" flexDirection="column">
+            <Stack direction="column">
+                <Grid container>
+                    <Typography variant="h6">{params.id}</Typography>
+                    <CopyButton value={params.id} />
+                </Grid>
+                <Typography color={!!isOnline() ? green[800] : blueGrey[400]}>
+                    { !!isOnline() ? 'Online' : 'Offline'}
+                </Typography>
+            </Stack>
+            
+
+            <Grid sx={{ overflowY: "scroll" }} alignItems="flex-end" justifyItems="flex-start" container>
+                {!!messages() && (
+                    <For each={messages()} fallback={
+                        <Typography variant="body2">Chat currently empty</Typography>
+                    }>
+                        {(curMsg, i) => (
+                            <Message message={curMsg} />
+                        )}
                     </For>
                 )}
-            </div>
-            <div class="container flex flex-row justify-around">
-                <div class="flex w-10/12">
-                    <textarea class="rounded-lg w-full" name="content" id="content" value={content()} onKeyUp={e => setContent(e.currentTarget.value)} />
-                </div>
-                <div class="flex w-2/12">
-                    <button class="rounded-lg  w-full bg-blue-300 px-2 mx-2" disabled={content().length <= 0} onClick={e => handleSubmit()}>Submit</button>
-                </div>
-                
-            </div>
-        </div>
+            </Grid>
+            <Grid spacing={2} alignContent="center" justifyItems="center" alignItems="center" justifyContent="center" item xs={9} sx={{ position: "fixed", bottom: 0, paddingY: theme.spacing(2) }} container>
+                <Grid item xs={10}>
+                    <TextField fullWidth name="content" id="content" value={content()} onChange={e => setContent(e.currentTarget.value)} />
+                </Grid>
+                <Grid container item xs={2}>
+                    <Button sx={{ height: theme.spacing(7) }} variant="contained" fullWidth disabled={content().length <= 0} onClick={e => handleSubmit()}>Submit</Button>
+                </Grid>
+            </Grid>
+        </Grid>
     );
 }
