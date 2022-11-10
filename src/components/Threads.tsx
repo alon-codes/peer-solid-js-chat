@@ -1,16 +1,23 @@
 import { useNavigate } from "@solidjs/router";
+import { useTheme } from "@suid/material";
+import Box from "@suid/material/Box";
+import Grid from "@suid/material/Grid";
+import Typography from "@suid/material/Typography";
 import { format } from "date-fns";
-import { createEffect, createSelector, createSignal, For } from "solid-js";
+import { createEffect, createSignal, For } from "solid-js";
 import { chat, ChatMessage } from "../state/ChatStore";
 
 export function Message(props: { message: ChatMessage }){
     const { content, inbound, time } = props.message;
     const color = inbound ? "bg-blue-300" : "bg-blue-400";
+    const theme = useTheme();
     return (
-        <div class={`flex flex-col ${color} container w-1/4 rounded-lg my-4 py-2 px-4`}>
-            <span class="single-message-date font-bold">{format(time, 'dd/mm/yyyy HH:mm')}</span>
-            <span class="single-message-content">{content}</span>
-        </div>
+        <Grid alignItems="center" alignContent={!inbound ? "flex-end" : "flex-start" } sx={{ marginY: theme.spacing(1) }} container direction="row" justifySelf="center" item xs={12}>
+            <Typography marginRight={2} fontWeight="bold" variant="caption">
+                {format(time, 'dd/M/yyyy HH:mm')}
+            </Typography>
+            <Typography variant="body1">{content}</Typography>
+        </Grid>
     )
 }
 
@@ -25,7 +32,7 @@ export function Thread(props: { deviceId: string }){
 
     return (
         <div class="s" onClick={e => navigate(`/chat/${deviceId}`)}>
-            <div>{deviceId}</div>
+            <h1 class="text-2xl">{deviceId}</h1>
             <div>
                 {/* BUG - Not showing the latest messages of the user */}
                 {!!lastMessage() ? <Message message={lastMessage()} /> : "Not messages for this thread" }
