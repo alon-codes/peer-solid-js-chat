@@ -11,12 +11,9 @@ import Paper from "@suid/material/Paper";
 import Stack from "@suid/material/Stack";
 import TextField from "@suid/material/TextField";
 import Typography from "@suid/material/Typography";
-import { format } from "date-fns";
-import { DataConnection } from "peerjs";
 import { createEffect, createSignal, For, from, on, onMount, observable, createReaction } from "solid-js";
-import { unwrap } from "solid-js/store";
 import { sendMessage, startConnection } from "../services/ChatService";
-import { chat, ChatMessage, ConnDescription } from "../state/ChatStore";
+import { chat, ChatMessage } from "../state/ChatStore";
 import { CopyButton } from "./Common";
 import { Message } from "./Threads";
 

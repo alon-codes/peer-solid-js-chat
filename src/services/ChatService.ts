@@ -59,7 +59,7 @@ export function connectToPeerServer() {
             setChatData('localDeviceId', deviceId);
         } else {
             deviceId = uuid();
-            setChatData('localDeviceId', uuid());
+            setChatData('localDeviceId', deviceId);
         }
 
         let peer = new Peer(deviceId);
@@ -128,7 +128,7 @@ export async function startConnection(deviceId: string): Promise<boolean> {
             existingConn = chat.peerConnection.peer.connect(deviceId);
             console.log("Problem with connection?", { existingConn });
 
-            if(!!existingConn) {
+            if(!!existingConn && !!existingConn.open) {
                 console.log("Registering session", { peer: existingConn.peer });
                 setChatData('sessions', (prevSessions) => prevSessions.set(existingConn.peer, existingConn));
             } else {
@@ -137,6 +137,7 @@ export async function startConnection(deviceId: string): Promise<boolean> {
 
         } else {
             existingConn = prevConn;
+            resolve(true);
         }
 
         console.log({ existingConn });

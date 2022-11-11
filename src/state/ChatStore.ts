@@ -11,7 +11,7 @@ export interface ChatMessage {
 
 export interface ConnDescription {
     peer?: Peer;
-    time: Date;
+    time?: Date;
 }
 
 export interface ChatSessionState {
