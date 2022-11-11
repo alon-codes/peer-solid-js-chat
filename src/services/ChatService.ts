@@ -128,7 +128,7 @@ export async function startConnection(deviceId: string): Promise<boolean> {
             existingConn = chat.peerConnection.peer.connect(deviceId);
             console.log("Problem with connection?", { existingConn });
 
-            if(!!existingConn && !!existingConn.open) {
+            if(!!existingConn) {
                 console.log("Registering session", { peer: existingConn.peer });
                 setChatData('sessions', (prevSessions) => prevSessions.set(existingConn.peer, existingConn));
             } else {
