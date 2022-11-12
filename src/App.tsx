@@ -10,6 +10,7 @@ import { connectToPeerServer } from './services/ChatService';
 import { chat, ChatMessage, errors, setChatData } from './state/ChatStore';
 import { v4 as uuid } from "uuid";
 import Alert from '@suid/material/Alert';
+import Container from '@suid/material/Container';
 
 let count = 0;
 
@@ -59,7 +60,7 @@ const App: Component = () => {
   createEffect(() => setDisplayErrors(chat.errors))
 
   return (
-    <div class="container p-5 mx-auto">
+    <Container>
       <Routes>
         <Route path="/" component={Home} />
         <Route path="chat/:id" component={Conversation} />
@@ -69,7 +70,7 @@ const App: Component = () => {
       </Routes>
       <Info />
       <CssBaseline />
-    </div>
+    </Container>
   )
 };
 

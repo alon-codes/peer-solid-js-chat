@@ -46,9 +46,9 @@ export default function Conversation() {
     let conn = chat.sessions.get(params.id);
 
     // Session data from store effect
-    createEffect( () => {
+    createEffect(() => {
         const session = chat.sessions.get(params.id);
-        if(!!session){
+        if (!!session) {
             session.on('open', () => {
                 console.log('Connection closed with ', params.id);
                 setOnline(true);
@@ -68,7 +68,7 @@ export default function Conversation() {
         // BUG - find better way to solve it!
         // Find a way to subscribe to chat.peerConnection for updates
         setTimeout(async () => {
-            if(!!chat.peerConnection && !!chat.peerConnection.peer){
+            if (!!chat.peerConnection && !!chat.peerConnection.peer) {
                 const res = await startConnection(params.id);
                 setOnline(res);
             }
@@ -79,21 +79,22 @@ export default function Conversation() {
     console.log({ messages });
 
     const theme = useTheme();
+    
+    // TODO - convert from hardcoded pixels to theme.spacing()
 
     return (
-        <Grid sx={{ position: "relative", height: "100%" }} item xs={12}  container justifyItems="stretch" alignItems="flex-start" justifyContent="space-around" flexDirection="column">
-            <Stack direction="column">
+        <Grid sx={{ position: "relative", height: "calc(100vh - 85px)", paddingTop: "60px" }} item xs={12} container justifyItems="stretch" alignItems="flex-start" justifyContent="space-around" flexDirection="column">
+            <Stack sx={{ position: "fixed", top: 0, marginBottom: '32px' }} direction="column">
                 <Grid container>
                     <Typography variant="h6">{params.id}</Typography>
                     <CopyButton value={params.id} />
                 </Grid>
                 <Typography color={!!isOnline() ? green[800] : blueGrey[400]}>
-                    { !!isOnline() ? 'Online' : 'Offline'}
+                    {!!isOnline() ? 'Online' : 'Offline'}
                 </Typography>
             </Stack>
-            
 
-            <Grid sx={{ overflowY: "scroll" }} alignItems="flex-end" justifyItems="flex-start" container>
+            <Grid sx={{ overflowY: "scroll", marginBottom: "20px" }} alignItems="flex-end" justifyItems="flex-start" container>
                 {!!messages() && (
                     <For each={messages()} fallback={
                         <Typography variant="body2">Chat currently empty</Typography>
@@ -106,7 +107,7 @@ export default function Conversation() {
             </Grid>
             <Grid spacing={2} alignContent="center" justifyItems="center" alignItems="center" justifyContent="center" item xs={9} sx={{ position: "fixed", bottom: 0, paddingY: theme.spacing(2) }} container>
                 <Grid item xs={10}>
-                    <TextField fullWidth name="content" id="content" value={content()} onChange={e => setContent(e.currentTarget.value)} />
+                    <TextField maxRows={1} fullWidth name="content" id="content" value={content()} onChange={e => setContent(e.currentTarget.value)} />
                 </Grid>
                 <Grid container item xs={2}>
                     <Button sx={{ height: theme.spacing(7) }} variant="contained" fullWidth disabled={content().length <= 0} onClick={e => handleSubmit()}>Submit</Button>
