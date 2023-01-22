@@ -2,6 +2,8 @@ import { useNavigate } from "@solidjs/router";
 import { useTheme } from "@suid/material";
 import Box from "@suid/material/Box";
 import Grid from "@suid/material/Grid";
+import List from "@suid/material/List";
+import ListItem from "@suid/material/ListItem";
 import Typography from "@suid/material/Typography";
 import { format } from "date-fns";
 import { createEffect, createSignal, For } from "solid-js";
@@ -31,19 +33,20 @@ export function Thread(props: { deviceId: string }){
     })
 
     return (
-        <div class="s" onClick={e => navigate(`/chat/${deviceId}`)}>
-            <h1 class="text-2xl">{deviceId}</h1>
-            <div>
+        <Grid onClick={e => navigate(`/chat/${deviceId}`)}>
+            <Typography variant="subtitle1">{deviceId}</Typography>
+            <Typography variant="caption">
                 {/* BUG - Not showing the latest messages of the user */}
                 {!!lastMessage() ? <Message message={lastMessage()} /> : "Not messages for this thread" }
-            </div>
-        </div>
+            </Typography>
+        </Grid>
     );
 }
 
 export default function Threads(){
     
     const [ sessions, setSessions ] = createSignal<Array<string>>();
+    const navigate = useNavigate();
 
     createEffect(() => {
         const sessionKeys = Array.from(chat.sessions.keys());
@@ -53,8 +56,15 @@ export default function Threads(){
     });
     
     return (
-        <For each={sessions()} fallback={<div>No thread so far</div>}>
-            {(str: string) => <Thread deviceId={str} />}
-        </For>
+        <List>
+            <For each={sessions()} fallback={<div>No thread so far</div>}>
+                {(deviceId: string) => (
+                    <ListItem onClick={e => navigate(`/chat/${deviceId}`)}>
+                        <Thread deviceId={deviceId} />
+                    </ListItem>
+                )}
+            </For>
+        </List>
+        
     );
 }
