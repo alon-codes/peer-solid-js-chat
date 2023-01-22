@@ -2,6 +2,8 @@ import { useNavigate } from "@solidjs/router";
 import { useTheme } from "@suid/material";
 import Box from "@suid/material/Box";
 import Grid from "@suid/material/Grid";
+import List from "@suid/material/List";
+import ListItem from "@suid/material/ListItem";
 import Typography from "@suid/material/Typography";
 import { format } from "date-fns";
 import { createEffect, createSignal, For } from "solid-js";
@@ -12,7 +14,7 @@ export function Message(props: { message: ChatMessage }){
     const color = inbound ? "bg-blue-300" : "bg-blue-400";
     const theme = useTheme();
     return (
-        <Grid alignItems="center" alignContent={!inbound ? "flex-end" : "flex-start" } marginBottom={2} item xs={12}>
+        <Grid sx={{ marginBottom: theme.spacing(2) }} alignItems="center" alignContent={!inbound ? "flex-end" : "flex-start" } item xs={12}>
             <Typography marginRight={2} fontWeight="bold" variant="caption">
                 {format(time, 'dd/M/yyyy HH:mm')}
             </Typography>
@@ -31,19 +33,20 @@ export function Thread(props: { deviceId: string }){
     })
 
     return (
-        <div class="s" onClick={e => navigate(`/chat/${deviceId}`)}>
-            <h1 class="text-2xl">{deviceId}</h1>
-            <div>
+        <Grid onClick={e => navigate(`/chat/${deviceId}`)}>
+            <Typography variant="subtitle1">{deviceId}</Typography>
+            <Typography variant="caption">
                 {/* BUG - Not showing the latest messages of the user */}
                 {!!lastMessage() ? <Message message={lastMessage()} /> : "Not messages for this thread" }
-            </div>
-        </div>
+            </Typography>
+        </Grid>
     );
 }
 
 export default function Threads(){
     
     const [ sessions, setSessions ] = createSignal<Array<string>>();
+    const navigate = useNavigate();
 
     createEffect(() => {
         const sessionKeys = Array.from(chat.sessions.keys());
@@ -53,8 +56,11 @@ export default function Threads(){
     });
     
     return (
-        <For each={sessions()} fallback={<div>No thread so far</div>}>
-            {(str: string) => <Thread deviceId={str} />}
-        </For>
+            <For each={sessions()} fallback={<div>No thread so far</div>}>
+                {(deviceId: string) => (
+                        <Thread deviceId={deviceId} />
+                )}
+            </For>
+        
     );
 }
