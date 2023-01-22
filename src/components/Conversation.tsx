@@ -45,7 +45,7 @@ export default function Conversation() {
 
     let conn = chat.sessions.get(params.id);
 
-    // Session data from store effect
+    // Tracking online status from session
     createEffect(() => {
         const session = chat.sessions.get(params.id);
         if (!!session) {
@@ -83,8 +83,8 @@ export default function Conversation() {
     // TODO - convert from hardcoded pixels to theme.spacing()
 
     return (
-        <Grid sx={{ position: "relative", height: "calc(100vh - 85px)", paddingTop: "60px" }} item xs={12} container justifyItems="stretch" alignItems="flex-start" justifyContent="space-around" flexDirection="column">
-            <Stack sx={{ position: "fixed", top: 0, marginBottom: '32px' }} direction="column">
+        <Grid sx={{ position: "relative", height: `calc(100vh - 85px)`, paddingTop: theme.spacing(6) }} item xs={12} container flexDirection="column">
+            <Stack sx={{ position: "fixed", top: 0, height: theme.spacing(5), marginBottom: theme.spacing(4.5), paddingTop: theme.spacing(1) }} direction="column">
                 <Grid container>
                     <Typography variant="h6">{params.id}</Typography>
                     <CopyButton value={params.id} />
@@ -94,7 +94,7 @@ export default function Conversation() {
                 </Typography>
             </Stack>
 
-            <Grid sx={{ overflowY: "scroll", marginBottom: "20px" }} alignItems="flex-end" justifyItems="flex-start" container>
+            <Grid  sx={{ overflowY: "scroll", height: "100vh", marginTop: theme.spacing(3) }} alignContent="flex-start" container>
                 {!!messages() && (
                     <For each={messages()} fallback={
                         <Typography variant="body2">Chat currently empty</Typography>
@@ -105,7 +105,7 @@ export default function Conversation() {
                     </For>
                 )}
             </Grid>
-            <Grid spacing={2} alignContent="center" justifyItems="center" alignItems="center" justifyContent="center" item xs={9} sx={{ position: "fixed", bottom: 0, paddingY: theme.spacing(2) }} container>
+            <Grid alignContent="center" justifyItems="center" alignItems="center" justifyContent="center" item xs={9} sx={{ position: "fixed", bottom: 0, paddingY: theme.spacing(2) }} container>
                 <Grid item xs={10}>
                     <TextField maxRows={1} fullWidth name="content" id="content" value={content()} onChange={e => setContent(e.currentTarget.value)} />
                 </Grid>

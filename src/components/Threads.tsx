@@ -14,7 +14,7 @@ export function Message(props: { message: ChatMessage }){
     const color = inbound ? "bg-blue-300" : "bg-blue-400";
     const theme = useTheme();
     return (
-        <Grid alignItems="center" alignContent={!inbound ? "flex-end" : "flex-start" } marginBottom={2} item xs={12}>
+        <Grid sx={{ marginBottom: theme.spacing(2) }} alignItems="center" alignContent={!inbound ? "flex-end" : "flex-start" } item xs={12}>
             <Typography marginRight={2} fontWeight="bold" variant="caption">
                 {format(time, 'dd/M/yyyy HH:mm')}
             </Typography>
@@ -56,15 +56,11 @@ export default function Threads(){
     });
     
     return (
-        <List>
             <For each={sessions()} fallback={<div>No thread so far</div>}>
                 {(deviceId: string) => (
-                    <ListItem onClick={e => navigate(`/chat/${deviceId}`)}>
                         <Thread deviceId={deviceId} />
-                    </ListItem>
                 )}
             </For>
-        </List>
         
     );
 }
