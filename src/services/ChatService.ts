@@ -50,6 +50,10 @@ export function addMessage(deviceId: string, chatMessage: ChatMessage) {
     })
 }
 
+export function closeSession(id: string){
+
+}
+
 export function connectToPeerServer() {
     try {
         // Checking for local device id
@@ -92,6 +96,13 @@ export function connectToPeerServer() {
                 console.log(`Connection with ${conn.peer}`)
                 conn.on('data', (d) => handelIncomingMessage(conn, d));
             });
+
+            conn.on("close", () => {
+                setChatData('sessions', (prevSessions) => {
+                    prevSessions.delete(conn.peer);
+                    return prevSessions;
+                })
+            })
 
             conn.on('error', (e) => {
                 console.error("Error with", { p: conn.peer, e });
