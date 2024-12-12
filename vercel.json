@@ -1,0 +1,14 @@
+{
+    "rewrites": [
+        {
+        "source": "/:chat*",
+        "has": [
+            {
+                "type": "host",
+                "value": "app.acme.com"
+            }
+        ],
+        "destination": "/app/:path*"
+        }
+    ]
+}  

@@ -3,6 +3,7 @@ import solidPlugin from 'vite-plugin-solid';
 import suidPlugin from "@suid/vite-plugin";
 
 export default defineConfig({
+  base: "/chat",
   plugins: [solidPlugin(), suidPlugin()],
   server: {
     port: 3000,
